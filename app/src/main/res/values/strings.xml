@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Pegasus</string>
+    <string name="onClick">I got clicked</string>
+</resources>
