@@ -19,13 +19,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Neeraj", "Error");
     }
 
-
     public void clicked(View view) {
         txt.setText(R.string.onClick);
-        txt.setText("bottha");
         Toast.makeText(this, "Textview CLicked !", Toast.LENGTH_SHORT).show();
-        System.out.println("kela lelo");
     }
-
 
 }
