@@ -14,6 +14,36 @@ public class MainActivity extends AppCompatActivity {
     TextView txt;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(MainActivity.class.getSimpleName(), "onStart Called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(MainActivity.class.getSimpleName(), "onStop Called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(MainActivity.class.getSimpleName(), "onDestroyed Called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(MainActivity.class.getSimpleName(), "onPause Called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(MainActivity.class.getSimpleName(), "onResume Called");
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
