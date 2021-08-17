@@ -4,7 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Source files/android/Pegasus/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.21302083333333333" />
-        <entry key="..\:/Source files/android/Pegasus/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Source files/android/Pegasus/app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="..\:/Source files/android/Pegasus/app/src/main/res/layout/activity_second.xml" value="0.25" />
       </map>
     </option>
   </component>
