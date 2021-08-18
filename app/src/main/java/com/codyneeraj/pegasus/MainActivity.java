@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
+     /**
      * Handles the data in the return intent from SecondActivity.
      *
      * @param requestCode Code for the SecondActivity request.
