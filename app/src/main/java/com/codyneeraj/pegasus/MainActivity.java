@@ -2,16 +2,19 @@ package com.codyneeraj.pegasus;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 
 /**
@@ -33,13 +36,14 @@ public class MainActivity extends AppCompatActivity {
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_FULLSCREEN;
     int UIforShowing = 0;
-
+    boolean SameAsInRsrcs;
     // EditText view for the message
     private EditText mMessageEditText;
     // TextView for the reply header
     private TextView mReplyHeadTextView;
     // TextView for the reply body
     private TextView mReplyTextView;
+    private Switch themetoggler;
     private Button barBtn;
     private ActionBar bar;
     private View decorView;
@@ -60,7 +64,20 @@ public class MainActivity extends AppCompatActivity {
         mReplyHeadTextView = findViewById(R.id.text_header_reply);
         mReplyTextView = findViewById(R.id.text_message_reply);
         barBtn = findViewById(R.id.hideMainBar);
+        themetoggler = findViewById(R.id.switch1);
         decorView = getWindow().getDecorView();
+        themetoggler.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (themetoggler.isChecked()) {
+//                    setTheme(R.style.DarkTheme);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
+                if (!themetoggler.isChecked()) {
+                    toastMaker("switch disabled").show();
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
+            }
+        });
     }
 
     /**
@@ -111,49 +128,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(MainActivity.class.getSimpleName(), "onStart Called");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d(MainActivity.class.getSimpleName(), "onStop Called");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(MainActivity.class.getSimpleName(), "onDestroyed Called");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(MainActivity.class.getSimpleName(), "onPause Called");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(MainActivity.class.getSimpleName(), "onResume Called");
-    }
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//        txt = (TextView) findViewById(R.id.Neeraj);
-//        Log.d("Neeraj", "Error");
-//    }
-//
-//    public void clicked(View view) {
-//        txt.setText(R.string.onClick);
-//        Toast.makeText(this, "Textview CLicked !", Toast.LENGTH_SHORT).show();
-//    }
-
     // Declare the onBackPressed method when the back button is presse this method will call
     @Override
     public void onBackPressed() {
@@ -191,15 +165,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void hideComponents(View view) {
-        if (!bar.isShowing()) {
-            barBtn.setText("Hide Components");
-            bar.show();
-            decorView.setSystemUiVisibility(UIforShowing);
-        }
-        if (bar.isShowing()) {
-            bar.hide();
-            decorView.setSystemUiVisibility(UIforHiding);
-            barBtn.setText("Show Components");
-        }
+        System.out.println(getWindow().getStatusBarColor());
+        getWindow().setStatusBarColor(getResources().getColor(R.color.teal_200));
+        getWindow().setNavigationBarColor(getResources().getColor(R.color.teal_200));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.purple_200));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.purple_200));
+        SameAsInRsrcs = getWindow().getStatusBarColor() == getResources().getColor(R.color.purple_200);
+    }
+
+    private Toast toastMaker(String message) {
+        return Toast.makeText(this, message, Toast.LENGTH_SHORT);
     }
 }
