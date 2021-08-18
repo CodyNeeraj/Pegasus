@@ -1,14 +1,15 @@
 package com.codyneeraj.pegasus;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,12 +19,20 @@ import androidx.appcompat.app.AppCompatActivity;
  * (intents) between them.
  */
 public class MainActivity extends AppCompatActivity {
-    // Class name for Log tag
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     // Unique tag required for the intent extra
     public static final String CODE = "com.example.android.twoactivities.extra.MESSAGE";
     // Unique tag for the intent reply
     public static final int INTENT_REQUEST = 1;
+    // Class name for Log tag
+
+    // the above code snippet will not change the layout such that the bottom
+    // components get revert back to normal state after pressing or getting
+    // both the navigation bar and StatusBar back
+
+    int UIforHiding = View.SYSTEM_UI_FLAG_IMMERSIVE
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_FULLSCREEN;
+    int UIforShowing = 0;
 
     // EditText view for the message
     private EditText mMessageEditText;
@@ -31,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mReplyHeadTextView;
     // TextView for the reply body
     private TextView mReplyTextView;
+    private Button barBtn;
+    private ActionBar bar;
+    private View decorView;
 
     /**
      * Initializes the activity.
@@ -43,9 +55,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Initialize all the view variables.
+        bar = getSupportActionBar();
         mMessageEditText = findViewById(R.id.editText_main);
         mReplyHeadTextView = findViewById(R.id.text_header_reply);
         mReplyTextView = findViewById(R.id.text_message_reply);
+        barBtn = findViewById(R.id.hideMainBar);
+        decorView = getWindow().getDecorView();
     }
 
     /**
@@ -60,16 +75,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SecondActivity.class);
         String message = mMessageEditText.getText().toString();
 
-        if (!(message.isEmpty() | message.length() == 0)) {
+        if (!(message.isEmpty() | message.equals(" "))) {
             intent.putExtra(CODE, message);
-            startActivityForResult(intent,INTENT_REQUEST);
+            startActivityForResult(intent, INTENT_REQUEST);
             //startActivity(intent);
         } else {
             Toast.makeText(this, "Message can't be left empty", Toast.LENGTH_SHORT).show();
         }
     }
 
-     /**
+    /**
      * Handles the data in the return intent from SecondActivity.
      *
      * @param requestCode Code for the SecondActivity request.
@@ -95,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     @Override
     protected void onStart() {
@@ -158,22 +172,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the positive button with yes name OnClickListener method is use of DialogInterface interface.
 
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // When the user click yes button then app will close
-                finish();
-            }
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            // When the user click yes button then app will close
+            finish();
         });
 
         // Set the Negative button with No name OnClickListener method is use of DialogInterface interface.
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // If user click no then dialog box is canceled.
-                dialog.cancel();
-            }
+        builder.setNegativeButton("No", (dialog, which) -> {
+            // If user click no then dialog box is canceled.
+            dialog.cancel();
         });
 
         // Create the Alert dialog
@@ -181,5 +188,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Show the Alert Dialog box
         alertDialog.show();
+    }
+
+    public void hideComponents(View view) {
+        if (!bar.isShowing()) {
+            barBtn.setText("Hide Components");
+            bar.show();
+            decorView.setSystemUiVisibility(UIforShowing);
+        }
+        if (bar.isShowing()) {
+            bar.hide();
+            decorView.setSystemUiVisibility(UIforHiding);
+            barBtn.setText("Show Components");
+        }
     }
 }
