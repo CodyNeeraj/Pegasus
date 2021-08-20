@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.Theme_Pegasus);
         setContentView(R.layout.activity_main);
 
         // Initialize all the view variables.
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SecondActivity.class);
         String message = mMessageEditText.getText().toString();
 
-        if (!(message.isEmpty() | message.equals(" "))) {
+        if (!message.trim().isEmpty()) {
             intent.putExtra(CODE, message);
             startActivityForResult(intent, INTENT_REQUEST);
             //startActivity(intent);
