@@ -71,6 +71,6 @@
         android:layout_marginTop="30dp"
         android:textColor="#fff"
         android:id="@+id/upload"
-        android:text="Signup"/>
+        android:text="Upload"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

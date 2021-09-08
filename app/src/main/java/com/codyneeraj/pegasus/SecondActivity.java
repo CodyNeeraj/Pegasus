@@ -37,11 +37,11 @@ public class SecondActivity extends AppCompatActivity {
         // Get the intent that launched this activity, and the message in
         // the intent extra.
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.CODE);
+       // String message = intent.getStringExtra(MainActivity.CODE);
 
         // Put that message into the text_message TextView
         TextView textView = findViewById(R.id.text_message);
-        textView.setText(message);
+       // textView.setText(message);
     }
 
     /**
