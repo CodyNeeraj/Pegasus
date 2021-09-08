@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!message.trim().isEmpty()) {
             intent.putExtra(CODE, message);
+            intent.setAction(Intent.ACTION_VIEW);
             startActivityForResult(intent, INTENT_REQUEST);
             //startActivity(intent);
         } else {
