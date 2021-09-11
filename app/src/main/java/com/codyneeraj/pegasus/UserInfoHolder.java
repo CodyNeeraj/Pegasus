@@ -9,6 +9,13 @@ public class UserInfoHolder {
         this.course = course;
         this.avatar = avatar;
     }
+    public UserInfoHolder(){}
+
+    public UserInfoHolder(String name, String contact, String course) {
+        this.name = name;
+        this.contact = contact;
+        this.course = course;
+    }
 
     public String getName() {
         return name;

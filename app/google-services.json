@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1096297039395",
+    "firebase_url": "https://pegasus-9c716-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "pegasus-9c716",
     "storage_bucket": "pegasus-9c716.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1096297039395-i45bu9cgbqgr34u8j9e4tsie0t6ucf30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codyneeraj.pegasus",
+            "certificate_hash": "ec3667e37c19f92e36ca1d85db764d06b5737b31"
+          }
+        },
         {
           "client_id": "1096297039395-ffqv0ervg26t3dd387c4dvgkcnbbeast.apps.googleusercontent.com",
           "client_type": 3
