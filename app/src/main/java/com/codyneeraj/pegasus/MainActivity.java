@@ -17,8 +17,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 
 /**
@@ -27,12 +36,15 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 public class MainActivity extends AppCompatActivity {
 
-    EditText roll, name, course, contact;
-    Uri imagePath;
-    ImageView avatar;
-    Button browse, upload;
-    Bitmap bitmap;
-    DatabaseReference root = FirebaseDatabase.getInstance().getReference("testDB");
+    private EditText roll, name, course, contact;
+    private Uri imagePath;
+    private ImageView avatar;
+    private Button browse, upload;
+    private ProgressDialog dialog;
+    private Bitmap bitmap;
+    //Will make a new node named testDB in the base of the root of the database , if nothing is provided then the default code of the db get used as a root node
+    private DatabaseReference root = FirebaseDatabase.getInstance().getReference("testDB");
+    private StorageReference reference = FirebaseStorage.getInstance().getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +52,17 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.Theme_Pegasus);
         setContentView(R.layout.activity_main);
 
+        name = (EditText) findViewById(R.id.t1);
+        course = (EditText) findViewById(R.id.t2);
+        contact = (EditText) findViewById(R.id.t3);
+        roll = (EditText) findViewById(R.id.t4);
+
         avatar = (ImageView) findViewById(R.id.img);
         upload = (Button) findViewById(R.id.upload);
         browse = (Button) findViewById(R.id.browse);
+        dialog = new ProgressDialog(this);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
 
         browse.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +74,15 @@ public class MainActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadtofirebase();
+                if (!roll.getText().toString().trim().isEmpty()
+                        && !name.getText().toString().trim().isEmpty()
+                        && !contact.getText().toString().trim().isEmpty()
+                        && !course.getText().toString().trim().isEmpty()
+                        && imagePath != null) {
+                    uploadToFirebase();
+                } else {
+                    toastMaker("Fields can't be left Empty").show();
+                }
             }
         });
     }
@@ -83,60 +111,36 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void uploadtofirebase() {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setTitle("Data Uploader");
+    private void uploadToFirebase() {
+        dialog.setTitle("Uploading ...");
         dialog.show();
-
-        name = (EditText) findViewById(R.id.t1);
-        course = (EditText) findViewById(R.id.t2);
-        contact = (EditText) findViewById(R.id.t3);
-        roll = (EditText) findViewById(R.id.t4);
-
-        UserInfoHolder obj = new UserInfoHolder(name.getText().toString(), contact.getText().toString(), course.getText().toString());
-        root.child(roll.getText().toString()).setValue(obj);
-
-        name.setText("");
-        course.setText("");
-        contact.setText("");
-        roll.setText("");
-        avatar.setImageResource(R.drawable.ic_launcher_background);
-        dialog.dismiss();
-        toastMaker("Uploaded");
-
-
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        StorageReference uploader = storage.getReference("img" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Calendar.getInstance().getTime()));
-
-//        uploader.putFile(imagePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                uploader.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
-//                        dialog.dismiss();
-//                        FirebaseDatabase db = FirebaseDatabase.getInstance();
-//                        DatabaseReference root = db.getReference("users");
-//
-//                        UserInfoHolder obj = new UserInfoHolder(name.getText().toString(), contact.getText().toString(), course.getText().toString(), uri.toString());
-//                        root.child(roll.getText().toString()).setValue(obj);
-//
-//                        name.setText("");
-//                        course.setText("");
-//                        contact.setText("");
-//                        roll.setText("");
-//                        avatar.setImageResource(R.drawable.ic_launcher_background);
-//                        toastMaker("Uploaded");
-//                    }
-//                });
-//            }
-//        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                float percent = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-//                dialog.setMessage("Uploaded :" + (int) percent + " %");
-//            }
-//        });
+        final StorageReference fileRef = reference.child("IMG_" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Calendar.getInstance().getTime()) + "." + getFileExtension(imagePath));
+        fileRef.putFile(imagePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        UserInfoHolder obj = new UserInfoHolder(name.getText().toString(), contact.getText().toString(), course.getText().toString(), uri.toString());
+                        root.child(roll.getText().toString()).setValue(obj);
+                        name.setText("");
+                        course.setText("");
+                        contact.setText("");
+                        roll.setText("");
+                        imagePath = null;
+                        avatar.setImageResource(R.drawable.ic_launcher_background);
+                        dialog.dismiss();
+                        toastMaker("Uploaded").show();
+                    }
+                });
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                float percent = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                dialog.setMessage("Transfered : " + (int) percent + " %");
+            }
+        });
     }
 
     private String getFileExtension(Uri mUri) {
