@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-
+//test comment for linux project structure syncing after a ong time of rest ;)
 /**
  * The TwoActivities app contains two activities and sends messages
  * (intents) between them.
